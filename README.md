@@ -1,10 +1,8 @@
 # Euler_22 
 
-Problem 22. 출제 일시 : 2012-01-03 19:11:35
-
 [문제 링크](http://euler.synap.co.kr/prob_detail.php?id=22)
-[names.txt](http://euler.synap.co.kr/files/names.txt)
 
+[names.txt](http://euler.synap.co.kr/files/names.txt)
 
 여기 5천개 이상의 영문 이름들이 들어있는 46KB짜리 텍스트 파일 names.txt 이 있습니다 (우클릭해서 다운로드 받으세요).
 이제 각. 이름에 대해서 아래와 같은 방법으로 점수를 매기고자 합니다.
@@ -20,6 +18,6 @@ names.txt에 들어있는 모든 이름의 점수를 계산해서 더하면 얼�
 
 규칙
   1. main함수 블럭내 Start,End 로그메시지를 감쏴세요
-  2. 양끝의 로그메시지 사이의 ms 시간을 재시기 바랍니다.
+  2. 양끝의 로그메시지 (문제 풀이 로직) 사이의 ms 시간을 재시기 바랍니다.
   3. 소스 커밋 및 ms 시간까지 Commit 해주세요
 
