@@ -2,58 +2,51 @@
 ## iamchiwon
 
 ### 풀이
-- 파일에서 먼저 String으로 다 읽어온 후에 사용했습니다.
+- 파일 읽는 부분은 stream을 사용한 function으로 만들었습니다
+- 파일 내용은 new line 이 없는 데이터이기 때문에 readLine() 으로만 읽어도 모두 읽을 수 있습니다 
 - regex 를 사용해서 split 하였습니다.
-- java 8 의 스트림 기능만을 사용했습니다.
+- 단어의 점수를 계산하는 부분은 character[] 의 스트림을 사용했습니다
 
 ### Source
 ```java
 public static void main(String[] args) throws IOException {
+
+    final String INPUT_FILE = "names.txt";
+
+    //file read function
+    final Function<String, String> readFile = filename -> {
+        try (BufferedReader br = Files.newBufferedReader(Paths.get(filename))) {
+            return br.readLine();
+        } catch (IOException e) {
+        }
+        return "";
+    };
+
+    //prepare
     System.out.println("START");
     System.out.println("--------------------");
-    long start = System.currentTimeMillis();
+    final long start = System.currentTimeMillis();
 
-    AtomicInteger counter = new AtomicInteger(1);
-    String nameAll = readFile("names.txt");
-    String[] names = nameAll.split("\",\"|\"");
-    int sum = Arrays.stream(names)
+    //parse
+    final String[] names = readFile.apply(INPUT_FILE).split("\",\"|\"");
+
+    //calc
+    final AtomicInteger indexer = new AtomicInteger();
+    final int sum = Arrays.stream(names)
             .filter(name -> !name.isEmpty())
             .sorted()
             .mapToInt(name -> {
                 int score = name.chars().map(ch -> ch - 'A' + 1).sum();
-                int count = counter.getAndIncrement();
-                return score * count;
+                int index = indexer.incrementAndGet();
+                return score * index;
             })
             .sum();
 
-    long end = System.currentTimeMillis();
+    //ending
+    final long end = System.currentTimeMillis();
     System.out.println("SUM : " + sum);
     System.out.println("--------------------");
     System.out.println("END : " + (end - start) + " ms");
-}
-
-private static String readFile(String filepath) {
-    File f = new File(filepath);
-    if (f.exists() == false) return "";
-
-    BufferedInputStream bin = null;
-    try {
-        bin = new BufferedInputStream(new FileInputStream(f));
-        int size = bin.available();
-        byte[] data = new byte[size];
-        bin.read(data);
-        bin.close();
-        return new String(data);
-    } catch (Exception e) {
-        e.printStackTrace();
-        if (bin != null) {
-            try {
-                bin.close();
-            } catch (Exception e2) {
-            }
-        }
-    }
-    return "";
 }
 ```
 
@@ -63,5 +56,5 @@ START
 --------------------
 SUM : 871198282
 --------------------
-END : 80 ms
+END : 52 ms
 ```

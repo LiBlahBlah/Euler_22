@@ -1,57 +1,52 @@
-import java.io.*;
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Paths;
 import java.util.Arrays;
-import java.util.Iterator;
 import java.util.concurrent.atomic.AtomicInteger;
+import java.util.function.Function;
 
 /**
  * Created by iamchiwon on 2017. 6. 18..
  */
 public class Main {
     public static void main(String[] args) throws IOException {
+
+        final String INPUT_FILE = "names.txt";
+
+        //file read function
+        final Function<String, String> readFile = filename -> {
+            try (BufferedReader br = Files.newBufferedReader(Paths.get(filename))) {
+                return br.readLine();
+            } catch (IOException e) {
+            }
+            return "";
+        };
+
+        //prepare
         System.out.println("START");
         System.out.println("--------------------");
-        long start = System.currentTimeMillis();
+        final long start = System.currentTimeMillis();
 
-        AtomicInteger counter = new AtomicInteger(1);
-        String nameAll = readFile("names.txt");
-        String[] names = nameAll.split("\",\"|\"");
-        int sum = Arrays.stream(names)
+        //parse
+        final String[] names = readFile.apply(INPUT_FILE).split("\",\"|\"");
+
+        //calc
+        final AtomicInteger indexer = new AtomicInteger();
+        final int sum = Arrays.stream(names)
                 .filter(name -> !name.isEmpty())
                 .sorted()
                 .mapToInt(name -> {
                     int score = name.chars().map(ch -> ch - 'A' + 1).sum();
-                    int count = counter.getAndIncrement();
-                    return score * count;
+                    int index = indexer.incrementAndGet();
+                    return score * index;
                 })
                 .sum();
 
-        long end = System.currentTimeMillis();
+        //ending
+        final long end = System.currentTimeMillis();
         System.out.println("SUM : " + sum);
         System.out.println("--------------------");
         System.out.println("END : " + (end - start) + " ms");
-    }
-
-    private static String readFile(String filepath) {
-        File f = new File(filepath);
-        if (f.exists() == false) return "";
-
-        BufferedInputStream bin = null;
-        try {
-            bin = new BufferedInputStream(new FileInputStream(f));
-            int size = bin.available();
-            byte[] data = new byte[size];
-            bin.read(data);
-            bin.close();
-            return new String(data);
-        } catch (Exception e) {
-            e.printStackTrace();
-            if (bin != null) {
-                try {
-                    bin.close();
-                } catch (Exception e2) {
-                }
-            }
-        }
-        return "";
     }
 }
